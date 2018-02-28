@@ -1,11 +1,5 @@
 module hospital
 
-sig Hospital {
-	medicos: set Medico,
-	enfermeiros: set Enfermeiro,
-	pacientes: set Paciente
-}
-
 
 sig Medico {
 	pacientes: set Paciente
