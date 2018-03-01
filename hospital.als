@@ -1,10 +1,17 @@
 module hospital
 
 
-sig Enfermeiro {
-	pacientes: set PacienteNormal
+sig Medico {
+	pacientes: set Paciente
 }{
-	#pacientes = 3
+	#pacientes <= 5
+}
+
+sig Enfermeiro {
+	pacientesNormal: set PacienteNormal,
+	pacientesCirurgia: set PacienteCirurgia
+}{
+	#(pacientesNormal + pacientesCirurgia) = 3
 }
 
 abstract sig  Paciente {
@@ -20,11 +27,12 @@ sig PacienteCirurgia extends Paciente {
 }
 
 fact {
-  all e: Enfermeiro |  some e.~pacientes
+  all p: PacienteNormal | one p.~pacientesNormal
+  all p: PacienteCirurgia | #p.~pacientesCirurgia = 2
 }
 
 
 
 
 pred show[] {}
-run show for 8
+run show for 5
