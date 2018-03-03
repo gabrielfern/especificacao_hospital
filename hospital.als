@@ -33,6 +33,20 @@ sig PacienteNormal extends Paciente {
 sig PacienteCirurgia extends Paciente {
 }
 
+abstract sig ProcedimentoMedico {}
+
+sig ProcedimentoTratarDoenca extends ProcedimentoMedico {}
+
+sig ProcedimentoRealizarCirugia extends ProcedimentoMedico {}
+
+abstract sig ProcedimentoEnfermeiro {}
+
+sig ProcedimentoMedirPressao extends ProcedimentoEnfermeiro {}
+
+sig ProcedimentoMinistrarMedicamentos extends ProcedimentoEnfermeiro {}
+
+sig ProcedimentoMudarSoro extends ProcedimentoEnfermeiro {}
+
 -- FUNÇOES
 
 fun enfermeirosAlocados[p: Paciente]: set Enfermeiro {
