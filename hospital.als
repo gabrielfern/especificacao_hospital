@@ -20,10 +20,10 @@ module hospital
 -- ASSINATURAS
 
 sig Medico {
-	pacientesMedico: set Paciente
+    pacientesMedico: set Paciente
 }
 sig Enfermeiro {
-	pacientesEnfermeiro: set Paciente
+    pacientesEnfermeiro: set Paciente
 }
 
 abstract sig Paciente {}
@@ -50,72 +50,72 @@ sig ProcedimentoMudarSoro extends ProcedimentoEnfermeiro {}
 -- FUNÇOES
 
 fun enfermeirosAlocados[p: Paciente]: set Enfermeiro {
-	p.~pacientesEnfermeiro
+    p.~pacientesEnfermeiro
 }
 
 fun temPacientesEnfermeiro[e: Enfermeiro]: set Paciente {
-	e.pacientesEnfermeiro
+    e.pacientesEnfermeiro
 }
 
 fun temPacientesMedico[m: Medico]: set Paciente {
-	m.pacientesMedico
+    m.pacientesMedico
 }
 
 
 -- PREDICADOS
 
 pred temNoMaxUmMedico[p: Paciente] {
-	lone p.~pacientesMedico
+    lone p.~pacientesMedico
 }
 
 pred todoPacienteTemEnfermeiro[] {
-  all p: PacienteNormal | #enfermeirosAlocados[p] = 1
-  all p: PacienteCirurgia | #enfermeirosAlocados[p] = 2
+    all p: PacienteNormal | #enfermeirosAlocados[p] = 1
+    all p: PacienteCirurgia | #enfermeirosAlocados[p] = 2
 }
 
 pred todoEnfermeiroTemTresPacientes[] {
-  all e: Enfermeiro | #temPacientesEnfermeiro[e] = 3
+    all e: Enfermeiro | #temPacientesEnfermeiro[e] = 3
 }
 
 pred todoPacienteTemNoMaxUmMedico[] {
-  all p: Paciente | temNoMaxUmMedico[p]
+    all p: Paciente | temNoMaxUmMedico[p]
 }
 
 pred todoMedicoTemAteCincoPacientes[] {
-  all m: Medico | #temPacientesMedico[m] <= 5
+    all m: Medico | #temPacientesMedico[m] <= 5
 }
 
 
 -- FATOS
 
 fact {
-  todoPacienteTemEnfermeiro[]
-  todoEnfermeiroTemTresPacientes[]
-  todoPacienteTemNoMaxUmMedico[]
-  todoMedicoTemAteCincoPacientes[]
+    todoPacienteTemEnfermeiro[]
+    todoEnfermeiroTemTresPacientes[]
+    todoPacienteTemNoMaxUmMedico[]
+    todoMedicoTemAteCincoPacientes[]
 }
 
 
 --TESTES
 
 assert todoPacienteTemNoMaxUmMedico {
-	all p: Paciente | lone p.~pacientesMedico
+    all p: Paciente | lone p.~pacientesMedico
 }
 
 assert todoPacienteNormalTemUmEnfermeiro {
-	all p: PacienteNormal |  #p.~pacientesEnfermeiro = 1
+    all p: PacienteNormal |  #p.~pacientesEnfermeiro = 1
 }
 
 assert todoPacienteCirurgiaTemDoisEnfermeiros {
-	all p: PacienteCirurgia |  #p.~pacientesEnfermeiro = 2
+    all p: PacienteCirurgia |  #p.~pacientesEnfermeiro = 2
 }
 
 assert todoMedicoTemAteCincoPacientes {
-	all m: Medico | #m.pacientesMedico <= 5
+    all m: Medico | #m.pacientesMedico <= 5
 }
 
 assert todoEnfermeiroTemTresPacientes {
-	all e: Enfermeiro | #e.pacientesEnfermeiro = 3
+    all e: Enfermeiro | #e.pacientesEnfermeiro = 3
 }
 
 
