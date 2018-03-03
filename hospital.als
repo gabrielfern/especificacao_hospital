@@ -1,5 +1,6 @@
 module hospital
 
+
 ------------------------------------------------------------------------
 -- PROJETO ALLOY: HOSPITAL
 
@@ -13,8 +14,8 @@ module hospital
 -- CLIENTE: GABRIELA MOTTA
 
 -- PROFESSOR: TIAGO MASSONI
-
 -------------------------------------------------------------------------
+
 
 -- ASSINATURAS
 
@@ -25,13 +26,11 @@ sig Enfermeiro {
 	pacientesEnfermeiro: set Paciente
 }
 
-abstract sig  Paciente {}
+abstract sig Paciente {}
 
-sig PacienteNormal extends Paciente {
-}
+sig PacienteNormal extends Paciente {}
 
-sig PacienteCirurgia extends Paciente {
-}
+sig PacienteCirurgia extends Paciente {}
 
 abstract sig ProcedimentoMedico {}
 
@@ -47,6 +46,7 @@ sig ProcedimentoMinistrarMedicamentos extends ProcedimentoEnfermeiro {}
 
 sig ProcedimentoMudarSoro extends ProcedimentoEnfermeiro {}
 
+
 -- FUNÇOES
 
 fun enfermeirosAlocados[p: Paciente]: set Enfermeiro {
@@ -60,6 +60,7 @@ fun temPacientesEnfermeiro[e: Enfermeiro]: set Paciente {
 fun temPacientesMedico[m: Medico]: set Paciente {
 	m.pacientesMedico
 }
+
 
 -- PREDICADOS
 
@@ -84,6 +85,7 @@ pred todoMedicoTemAteCincoPacientes[] {
   all m: Medico | #temPacientesMedico[m] <= 5
 }
 
+
 -- FATOS
 
 fact {
@@ -92,6 +94,7 @@ fact {
   todoPacienteTemNoMaxUmMedico[]
   todoMedicoTemAteCincoPacientes[]
 }
+
 
 --TESTES
 
@@ -114,6 +117,7 @@ assert todoMedicoTemAteCincoPacientes {
 assert todoEnfermeiroTemTresPacientes {
 	all e: Enfermeiro | #e.pacientesEnfermeiro = 3
 }
+
 
 -- CRIAÇAO DO DIAGRAMA
 
