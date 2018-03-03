@@ -19,7 +19,7 @@ module hospital
 -- ASSINATURAS
 
 sig Medico {
-	pacientesMedico: set Paciente
+	pacientesMedico: set Paciente,
 }
 sig Enfermeiro {
 	pacientesEnfermeiro: set Paciente
@@ -35,9 +35,13 @@ sig PacienteCirurgia extends Paciente {
 
 abstract sig ProcedimentoMedico {}
 
-sig ProcedimentoTratarDoenca extends ProcedimentoMedico {}
+sig ProcedimentoTratarDoenca extends ProcedimentoMedico {
+	pacienteProcedimentoDoenca: one PacienteNormal
+}
 
-sig ProcedimentoRealizarCirugia extends ProcedimentoMedico {}
+sig ProcedimentoRealizarCirurgia extends ProcedimentoMedico {
+	pacienteProcedimentoCirurgia: one PacienteCirurgia
+}
 
 abstract sig ProcedimentoEnfermeiro {}
 
@@ -84,6 +88,19 @@ pred todoMedicoTemAteCincoPacientes[] {
   all m: Medico | #temPacientesMedico[m] <= 5
 }
 
+pred temNoMaxUmProcedimentoMedicoCirurgia[p: Paciente] {
+	lone p.~pacienteProcedimentoCirurgia 
+}
+
+pred temNoMaxUmProcedimentoMedicoDoenca[p: Paciente] {
+	lone p.~pacienteProcedimentoDoenca
+}
+
+pred todoPacienteTemNoMaxUmProcedimento[] {
+  all p: Paciente | temNoMaxUmProcedimentoMedicoCirurgia[p]
+  all p: Paciente | temNoMaxUmProcedimentoMedicoDoenca[p]	 
+}
+
 -- FATOS
 
 fact {
@@ -91,6 +108,7 @@ fact {
   todoEnfermeiroTemTresPacientes[]
   todoPacienteTemNoMaxUmMedico[]
   todoMedicoTemAteCincoPacientes[]
+  todoPacienteTemNoMaxUmProcedimento[]
 }
 
 --TESTES
