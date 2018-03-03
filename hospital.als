@@ -16,14 +16,18 @@ module hospital
 -- PROFESSOR: TIAGO MASSONI
 -------------------------------------------------------------------------
 
-
 -- ASSINATURAS
 
+one sig Hospital {
+	medicos: set Medico,
+	enfermeiros: set Enfermeiro
+}
+
 sig Medico {
-    pacientesMedico: set Paciente
+	pacientesMedico: set Paciente
 }
 sig Enfermeiro {
-    pacientesEnfermeiro: set Paciente
+	procedimentosEnfermeiro: set ProcedimentoEnfermeiro    
 }
 
 abstract sig Paciente {}
@@ -32,69 +36,94 @@ sig PacienteNormal extends Paciente {}
 
 sig PacienteCirurgia extends Paciente {}
 
-abstract sig ProcedimentoMedico {}
+abstract sig ProcedimentoEnfermeiro {
+	pacienteProcedimentoEnfermeiro: one Paciente
+}
 
-sig ProcedimentoTratarDoenca extends ProcedimentoMedico {}
+sig MedirPressao extends ProcedimentoEnfermeiro {}
 
-sig ProcedimentoRealizarCirugia extends ProcedimentoMedico {}
+sig MinistrarMedicamentos extends ProcedimentoEnfermeiro {}
 
-abstract sig ProcedimentoEnfermeiro {}
-
-sig ProcedimentoMedirPressao extends ProcedimentoEnfermeiro {}
-
-sig ProcedimentoMinistrarMedicamentos extends ProcedimentoEnfermeiro {}
-
-sig ProcedimentoMudarSoro extends ProcedimentoEnfermeiro {}
-
+sig MudarSoro extends ProcedimentoEnfermeiro {}
 
 -- FUNÇOES
 
-fun enfermeirosAlocados[p: Paciente]: set Enfermeiro {
-    p.~pacientesEnfermeiro
+fun procedimentoEnfermeirosAlocados[p: ProcedimentoEnfermeiro]: set Enfermeiro {
+	p.~procedimentosEnfermeiro
 }
 
-fun temPacientesEnfermeiro[e: Enfermeiro]: set Paciente {
-    e.pacientesEnfermeiro
+fun pacienteProcedimentosAlocados[p: Paciente]: set ProcedimentoEnfermeiro {
+	p.~pacienteProcedimentoEnfermeiro
+}
+
+fun pacienteEnfermeirosAlocados[p: Paciente]: set Enfermeiro {
+	p.~pacienteProcedimentoEnfermeiro.~procedimentosEnfermeiro
 }
 
 fun temPacientesMedico[m: Medico]: set Paciente {
-    m.pacientesMedico
+	m.pacientesMedico
 }
-
 
 -- PREDICADOS
 
 pred temNoMaxUmMedico[p: Paciente] {
-    lone p.~pacientesMedico
-}
-
-pred todoPacienteTemEnfermeiro[] {
-    all p: PacienteNormal | #enfermeirosAlocados[p] = 1
-    all p: PacienteCirurgia | #enfermeirosAlocados[p] = 2
-}
-
-pred todoEnfermeiroTemTresPacientes[] {
-    all e: Enfermeiro | #temPacientesEnfermeiro[e] = 3
+	lone p.~pacientesMedico
 }
 
 pred todoPacienteTemNoMaxUmMedico[] {
-    all p: Paciente | temNoMaxUmMedico[p]
+	all p: Paciente | temNoMaxUmMedico[p]
 }
 
 pred todoMedicoTemAteCincoPacientes[] {
-    all m: Medico | #temPacientesMedico[m] <= 5
+	all m: Medico | #temPacientesMedico[m] <= 5
 }
 
+pred todoEnfermeiroTemTresProcedimentos[] {
+	all e: Enfermeiro | #e.procedimentosEnfermeiro = 3
+}
+
+pred todoProcedimentoTemUmEnfermeiro[] {
+	all p: ProcedimentoEnfermeiro | one procedimentoEnfermeirosAlocados[p]
+}
+
+pred todoPacienteTemProcedimento[] {
+	all p: PacienteNormal | #pacienteProcedimentosAlocados[p] = 1
+	all p: PacienteCirurgia | #pacienteProcedimentosAlocados[p] = 2  
+}
+
+pred todoPacienteTemEnfermeiro[] {
+	all p: PacienteNormal | #pacienteEnfermeirosAlocados[p] = 1
+	all p: PacienteCirurgia | #pacienteEnfermeirosAlocados[p] = 2
+}
+
+pred todoEnfermeiroTaNoHospital[] {
+	all e: Enfermeiro | one e.~enfermeiros
+}
+
+pred todoMedicoTaNoHospital[] {
+	all m: Medico | one m.~medicos
+}
 
 -- FATOS
-
-fact {
-    todoPacienteTemEnfermeiro[]
-    todoEnfermeiroTemTresPacientes[]
-    todoPacienteTemNoMaxUmMedico[]
-    todoMedicoTemAteCincoPacientes[]
+fact Medico {
+	todoMedicoTaNoHospital[]
+     todoPacienteTemNoMaxUmMedico[]
+     todoMedicoTemAteCincoPacientes[]
 }
 
+fact Enfermeiro {
+	todoEnfermeiroTemTresProcedimentos[]
+	todoEnfermeiroTaNoHospital[]
+}
+
+fact ProcedimentoEnfermeiro {
+	todoProcedimentoTemUmEnfermeiro[]
+}
+
+fact Paciente {
+	todoPacienteTemProcedimento[]
+	todoPacienteTemEnfermeiro[]
+}
 
 --TESTES
 
@@ -103,29 +132,33 @@ assert todoPacienteTemNoMaxUmMedico {
 }
 
 assert todoPacienteNormalTemUmEnfermeiro {
-    all p: PacienteNormal |  #p.~pacientesEnfermeiro = 1
+    all p: PacienteNormal |  #p.~pacienteProcedimentoEnfermeiro.~procedimentosEnfermeiro = 1
 }
 
 assert todoPacienteCirurgiaTemDoisEnfermeiros {
-    all p: PacienteCirurgia |  #p.~pacientesEnfermeiro = 2
+    all p: PacienteCirurgia |  #p.~pacienteProcedimentoEnfermeiro.~procedimentosEnfermeiro = 2
 }
 
 assert todoMedicoTemAteCincoPacientes {
     all m: Medico | #m.pacientesMedico <= 5
 }
 
-assert todoEnfermeiroTemTresPacientes {
-    all e: Enfermeiro | #e.pacientesEnfermeiro = 3
+assert todoEnfermeiroTemTresProcedimentos {
+    all e: Enfermeiro | #e.procedimentosEnfermeiro = 3
 }
 
+assert todoProcedimentoTemUmEnfermeiro {
+    all p: ProcedimentoEnfermeiro | one p.~procedimentosEnfermeiro
+}
 
 -- CRIAÇAO DO DIAGRAMA
 
 pred show[] {}
-run show for 5
+run show for 8
 
 check todoPacienteCirurgiaTemDoisEnfermeiros for 3
 check todoPacienteNormalTemUmEnfermeiro for 3
 check todoPacienteTemNoMaxUmMedico for 3
 check todoMedicoTemAteCincoPacientes for 3
-check todoEnfermeiroTemTresPacientes for 3
+check todoEnfermeiroTemTresProcedimentos for 3
+check todoProcedimentoTemUmEnfermeiro for 3
