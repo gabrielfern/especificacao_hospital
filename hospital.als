@@ -20,16 +20,16 @@ module hospital
 -- ASSINATURAS
 
 one sig Hospital {
-	medicos: set Medico,
-	enfermeiros: set Enfermeiro
+    medicos: set Medico,
+    enfermeiros: set Enfermeiro
 }
 
 sig Medico {
-	cuidados: set Cuidar
+    cuidados: set Cuidar
 }
 
 sig Enfermeiro {
-	procedimentosEnfermeiro: set ProcedimentoEnfermeiro    
+    procedimentosEnfermeiro: set ProcedimentoEnfermeiro    
 }
 
 abstract sig Paciente {}
@@ -39,7 +39,7 @@ sig PacienteNormal extends Paciente {}
 sig PacienteCirurgia extends Paciente {}
 
 abstract sig ProcedimentoEnfermeiro {
-	pacienteProcedimentoEnfermeiro: one Paciente
+    pacienteProcedimentoEnfermeiro: one Paciente
 }
 
 sig MedirPressao extends ProcedimentoEnfermeiro {}
@@ -49,103 +49,103 @@ sig MinistrarMedicamentos extends ProcedimentoEnfermeiro {}
 sig MudarSoro extends ProcedimentoEnfermeiro {}
 
 sig Cuidar {
-	paciente: one Paciente
+    paciente: one Paciente
 }
 
 
 -- FUNÇOES
 
 fun temPacientesMedico[m: Medico]: set Cuidar {
-	m.cuidados
+    m.cuidados
 }
 
 fun procedimentoEnfermeirosAlocados[p: ProcedimentoEnfermeiro]: set Enfermeiro {
-	p.~procedimentosEnfermeiro
+    p.~procedimentosEnfermeiro
 }
 
 fun pacienteProcedimentosAlocados[p: Paciente]: set ProcedimentoEnfermeiro {
-	p.~pacienteProcedimentoEnfermeiro
+    p.~pacienteProcedimentoEnfermeiro
 }
 
 fun pacienteEnfermeirosAlocados[p: Paciente]: set Enfermeiro {
-	p.~pacienteProcedimentoEnfermeiro.~procedimentosEnfermeiro
+    p.~pacienteProcedimentoEnfermeiro.~procedimentosEnfermeiro
 }
 
 
 -- PREDICADOS
 
 pred todoEnfermeiroTaNoHospital[] {
-	all e: Enfermeiro | one e.~enfermeiros
+    all e: Enfermeiro | one e.~enfermeiros
 }
 
 pred todoMedicoTaNoHospital[] {
-	all m: Medico | one m.~medicos
+    all m: Medico | one m.~medicos
 }
 
 pred temNoMaxUmMedico[p: Paciente] {
-	lone p.~paciente.~cuidados
+    lone p.~paciente.~cuidados
 }
 
 pred todoPacienteTemNoMaxUmMedico[] {
-	all p: Paciente | temNoMaxUmMedico[p]
+    all p: Paciente | temNoMaxUmMedico[p]
 }
 
 pred todoMedicoTemAteCincoPacientes[] {
-	all m: Medico | #temPacientesMedico[m] <= 5
+    all m: Medico | #temPacientesMedico[m] <= 5
 }
 
 pred todoEnfermeiroTemTresProcedimentos[] {
-	all e: Enfermeiro | #e.procedimentosEnfermeiro = 3
+    all e: Enfermeiro | #e.procedimentosEnfermeiro = 3
 }
 
 pred todoProcedimentoTemUmEnfermeiro[] {
-	all p: ProcedimentoEnfermeiro | one procedimentoEnfermeirosAlocados[p]
+    all p: ProcedimentoEnfermeiro | one procedimentoEnfermeirosAlocados[p]
 }
 
 pred todoPacienteTemProcedimento[] {
-	all p: PacienteNormal | #pacienteProcedimentosAlocados[p] = 1
-	all p: PacienteCirurgia | #pacienteProcedimentosAlocados[p] = 2  
+    all p: PacienteNormal | #pacienteProcedimentosAlocados[p] = 1
+    all p: PacienteCirurgia | #pacienteProcedimentosAlocados[p] = 2  
 }
 
 pred todoPacienteTemEnfermeiro[] {
-	all p: PacienteNormal | #pacienteEnfermeirosAlocados[p] = 1
-	all p: PacienteCirurgia | #pacienteEnfermeirosAlocados[p] = 2
+    all p: PacienteNormal | #pacienteEnfermeirosAlocados[p] = 1
+    all p: PacienteCirurgia | #pacienteEnfermeirosAlocados[p] = 2
 }
 
 pred todoPacienteEhTidoNoMaxPorUmCuidar[] {
-	all p: Paciente | lone p.~paciente
+    all p: Paciente | lone p.~paciente
 }
 
 pred todoCuidarTemUmMedico[] {
-	all c: Cuidar | one c.~cuidados
+    all c: Cuidar | one c.~cuidados
 }
 
 
 -- FATOS
 
 fact Medico {
-	todoMedicoTaNoHospital[]
-     todoMedicoTemAteCincoPacientes[]
+    todoMedicoTaNoHospital[]
+    todoMedicoTemAteCincoPacientes[]
 }
 
 fact Enfermeiro {
-	todoEnfermeiroTemTresProcedimentos[]
-	todoEnfermeiroTaNoHospital[]
+    todoEnfermeiroTemTresProcedimentos[]
+    todoEnfermeiroTaNoHospital[]
 }
 
 fact Paciente {
-	todoPacienteTemProcedimento[]
-	todoPacienteTemEnfermeiro[]
-     todoPacienteTemNoMaxUmMedico[]
-	todoPacienteEhTidoNoMaxPorUmCuidar[]
+    todoPacienteTemProcedimento[]
+    todoPacienteTemEnfermeiro[]
+    todoPacienteTemNoMaxUmMedico[]
+    todoPacienteEhTidoNoMaxPorUmCuidar[]
 }
 
 fact ProcedimentoEnfermeiro {
-	todoProcedimentoTemUmEnfermeiro[]
+    todoProcedimentoTemUmEnfermeiro[]
 }
 
 fact Cuidar {
-	todoCuidarTemUmMedico[]
+    todoCuidarTemUmMedico[]
 }
 
 
@@ -176,7 +176,7 @@ assert todoProcedimentoTemUmEnfermeiro {
 }
 
 assert cuidadosIgualPaciente {
-	#cuidados = #paciente
+    #cuidados = #paciente
 }
 
 
