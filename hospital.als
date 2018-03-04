@@ -25,9 +25,9 @@ one sig Hospital {
 }
 
 sig Medico {
-	tratados: set Tratar
+	cuidados: set Cuidar
 }
-sig Tratar {
+sig Cuidar {
 	paciente: one Paciente
 }
 sig Enfermeiro {
@@ -65,15 +65,15 @@ fun pacienteEnfermeirosAlocados[p: Paciente]: set Enfermeiro {
 	p.~pacienteProcedimentoEnfermeiro.~procedimentosEnfermeiro
 }
 
-fun temPacientesMedico[m: Medico]: set Tratar {
-	m.tratados
+fun temPacientesMedico[m: Medico]: set Cuidar {
+	m.cuidados
 }
 
 
 -- PREDICADOS
 
 pred temNoMaxUmMedico[p: Paciente] {
-	lone p.~paciente.~tratados
+	lone p.~paciente.~cuidados
 }
 
 pred todoPacienteTemNoMaxUmMedico[] {
@@ -84,12 +84,12 @@ pred todoMedicoTemAteCincoPacientes[] {
 	all m: Medico | #temPacientesMedico[m] <= 5
 }
 
-pred todoPacienteEhTidoNoMaxPorUmTratar[] {
+pred todoPacienteEhTidoNoMaxPorUmCuidar[] {
 	all p: Paciente | lone p.~paciente
 }
 
-pred todoTratarTemUmMedico[] {
-	all t: Tratar | one t.~tratados
+pred todoCuidarTemUmMedico[] {
+	all c: Cuidar | one c.~cuidados
 }
 
 pred todoEnfermeiroTemTresProcedimentos[] {
@@ -124,7 +124,7 @@ fact Medico {
 	todoMedicoTaNoHospital[]
      todoPacienteTemNoMaxUmMedico[]
      todoMedicoTemAteCincoPacientes[]
-	todoTratarTemUmMedico[]
+	todoCuidarTemUmMedico[]
 }
 
 fact Enfermeiro {
@@ -137,7 +137,7 @@ fact ProcedimentoEnfermeiro {
 }
 
 fact Paciente {
-	todoPacienteEhTidoNoMaxPorUmTratar[]
+	todoPacienteEhTidoNoMaxPorUmCuidar[]
 	todoPacienteTemProcedimento[]
 	todoPacienteTemEnfermeiro[]
 }
@@ -146,7 +146,7 @@ fact Paciente {
 --TESTES
 
 assert todoPacienteTemNoMaxUmMedico {
-    all p: Paciente | lone p.~paciente.~tratados
+    all p: Paciente | lone p.~paciente.~cuidados
 }
 
 assert todoPacienteNormalTemUmEnfermeiro {
@@ -158,7 +158,7 @@ assert todoPacienteCirurgiaTemDoisEnfermeiros {
 }
 
 assert todoMedicoTemAteCincoPacientes {
-    all m: Medico | #m.tratados <= 5
+    all m: Medico | #m.cuidados<= 5
 }
 
 assert todoEnfermeiroTemTresProcedimentos {
@@ -169,8 +169,8 @@ assert todoProcedimentoTemUmEnfermeiro {
     all p: ProcedimentoEnfermeiro | one p.~procedimentosEnfermeiro
 }
 
-assert tratadosIgualPaciente {
-	#tratados = #paciente
+assert cuidadosIgualPaciente {
+	#cuidados = #paciente
 }
 
 
@@ -185,3 +185,4 @@ check todoPacienteTemNoMaxUmMedico for 3
 check todoMedicoTemAteCincoPacientes for 3
 check todoEnfermeiroTemTresProcedimentos for 3
 check todoProcedimentoTemUmEnfermeiro for 3
+check cuidadosIgualPaciente for 3
