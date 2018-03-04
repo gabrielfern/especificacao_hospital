@@ -156,6 +156,10 @@ fact Cuidar {
 
 --TESTES
 
+assert todoPacienteCirurgiaTemDoisProcedimentosDiferentes {
+     all p : PacienteCirurgia, p1: PacienteCirurgia | !((p.~pacienteProcedimentoEnfermeiro in MudarSoro and p1.~pacienteProcedimentoEnfermeiro in MudarSoro) or (p.~pacienteProcedimentoEnfermeiro in MinistrarMedicamentos and p1.~pacienteProcedimentoEnfermeiro in MinistrarMedicamentos) or (p.~pacienteProcedimentoEnfermeiro in MedirPressao and p1.~pacienteProcedimentoEnfermeiro in MedirPressao))
+}
+
 assert todoMedicoTemAteCincoPacientes {
     all m: Medico | #m.cuidados<= 5
 }
@@ -197,3 +201,4 @@ check todoMedicoTemAteCincoPacientes for 3
 check todoEnfermeiroTemTresProcedimentos for 3
 check todoProcedimentoTemUmEnfermeiro for 3
 check cuidadosIgualPaciente for 3
+check todoPacienteCirurgiaTemDoisProcedimentosDiferentes for 3
