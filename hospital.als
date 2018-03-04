@@ -24,7 +24,10 @@ one sig Hospital {
 }
 
 sig Medico {
-	pacientesMedico: set Paciente
+	medicoPacientes: set MedicoPaciente
+}
+sig MedicoPaciente {
+	medicoPaciente: one Paciente
 }
 sig Enfermeiro {
 	procedimentosEnfermeiro: set ProcedimentoEnfermeiro    
@@ -60,14 +63,14 @@ fun pacienteEnfermeirosAlocados[p: Paciente]: set Enfermeiro {
 	p.~pacienteProcedimentoEnfermeiro.~procedimentosEnfermeiro
 }
 
-fun temPacientesMedico[m: Medico]: set Paciente {
-	m.pacientesMedico
+fun temPacientesMedico[m: Medico]: set MedicoPaciente {
+	m.medicoPacientes
 }
 
 -- PREDICADOS
 
 pred temNoMaxUmMedico[p: Paciente] {
-	lone p.~pacientesMedico
+	lone p.~medicoPaciente.~medicoPacientes
 }
 
 pred todoPacienteTemNoMaxUmMedico[] {
@@ -76,6 +79,14 @@ pred todoPacienteTemNoMaxUmMedico[] {
 
 pred todoMedicoTemAteCincoPacientes[] {
 	all m: Medico | #temPacientesMedico[m] <= 5
+}
+
+pred todoPacienteEhTidoNoMaxPorUmMedicoPaciente[] {
+	all p: Paciente | lone p.~medicoPaciente
+}
+
+pred todoMedicoPacienteTemUmMedico[] {
+	all mp: MedicoPaciente | one mp.~medicoPacientes
 }
 
 pred todoEnfermeiroTemTresProcedimentos[] {
@@ -109,6 +120,7 @@ fact Medico {
 	todoMedicoTaNoHospital[]
      todoPacienteTemNoMaxUmMedico[]
      todoMedicoTemAteCincoPacientes[]
+	todoMedicoPacienteTemUmMedico[]
 }
 
 fact Enfermeiro {
@@ -121,6 +133,7 @@ fact ProcedimentoEnfermeiro {
 }
 
 fact Paciente {
+	todoPacienteEhTidoNoMaxPorUmMedicoPaciente[]
 	todoPacienteTemProcedimento[]
 	todoPacienteTemEnfermeiro[]
 }
@@ -128,7 +141,7 @@ fact Paciente {
 --TESTES
 
 assert todoPacienteTemNoMaxUmMedico {
-    all p: Paciente | lone p.~pacientesMedico
+    all p: Paciente | lone p.~medicoPaciente.~medicoPacientes
 }
 
 assert todoPacienteNormalTemUmEnfermeiro {
@@ -140,7 +153,7 @@ assert todoPacienteCirurgiaTemDoisEnfermeiros {
 }
 
 assert todoMedicoTemAteCincoPacientes {
-    all m: Medico | #m.pacientesMedico <= 5
+    all m: Medico | #m.medicoPacientes <= 5
 }
 
 assert todoEnfermeiroTemTresProcedimentos {
@@ -151,10 +164,14 @@ assert todoProcedimentoTemUmEnfermeiro {
     all p: ProcedimentoEnfermeiro | one p.~procedimentosEnfermeiro
 }
 
+assert medicoPacientesIgualMecidoPaciente {
+	#medicoPacientes = #medicoPaciente
+}
+
 -- CRIAÇAO DO DIAGRAMA
 
 pred show[] {}
-run show for 8
+run show for 4
 
 check todoPacienteCirurgiaTemDoisEnfermeiros for 3
 check todoPacienteNormalTemUmEnfermeiro for 3
