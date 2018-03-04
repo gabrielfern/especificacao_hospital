@@ -121,7 +121,13 @@ pred todoCuidarTemUmMedico[] {
 }
 
 pred todoPacienteCirurgiaTemDoisProcedimentosDiferentes[] {
-    all p : PacienteCirurgia, p1: PacienteCirurgia | !((p.~pacienteProcedimentoEnfermeiro in MudarSoro and p1.~pacienteProcedimentoEnfermeiro in MudarSoro) or (p.~pacienteProcedimentoEnfermeiro in MinistrarMedicamentos and p1.~pacienteProcedimentoEnfermeiro in MinistrarMedicamentos) or (p.~pacienteProcedimentoEnfermeiro in MedirPressao and p1.~pacienteProcedimentoEnfermeiro in MedirPressao))
+    all p : PacienteCirurgia, p1: PacienteCirurgia | 
+    !((p.~pacienteProcedimentoEnfermeiro in MudarSoro and 
+    p1.~pacienteProcedimentoEnfermeiro in MudarSoro) or 
+    (p.~pacienteProcedimentoEnfermeiro in MinistrarMedicamentos and 
+    p1.~pacienteProcedimentoEnfermeiro in MinistrarMedicamentos) or 
+    (p.~pacienteProcedimentoEnfermeiro in MedirPressao and 
+    p1.~pacienteProcedimentoEnfermeiro in MedirPressao))
 }
 
 
@@ -142,7 +148,7 @@ fact Paciente {
     todoPacienteTemEnfermeiro[]
     todoPacienteTemNoMaxUmMedico[]
     todoPacienteEhTidoNoMaxPorUmCuidar[]
-    todoPacienteCirurgiaTemDoisProcedimentosDiferentes
+    todoPacienteCirurgiaTemDoisProcedimentosDiferentes[]
 }
 
 fact ProcedimentoEnfermeiro {
@@ -155,10 +161,6 @@ fact Cuidar {
 
 
 --TESTES
-
-assert todoPacienteCirurgiaTemDoisProcedimentosDiferentes {
-     all p : PacienteCirurgia, p1: PacienteCirurgia | !((p.~pacienteProcedimentoEnfermeiro in MudarSoro and p1.~pacienteProcedimentoEnfermeiro in MudarSoro) or (p.~pacienteProcedimentoEnfermeiro in MinistrarMedicamentos and p1.~pacienteProcedimentoEnfermeiro in MinistrarMedicamentos) or (p.~pacienteProcedimentoEnfermeiro in MedirPressao and p1.~pacienteProcedimentoEnfermeiro in MedirPressao))
-}
 
 assert todoMedicoTemAteCincoPacientes {
     all m: Medico | #m.cuidados<= 5
@@ -188,11 +190,21 @@ assert cuidadosIgualPaciente {
     #cuidados = #paciente
 }
 
+assert todoPacienteCirurgiaTemDoisProcedimentosDiferentes {
+    all p : PacienteCirurgia, p1: PacienteCirurgia | 
+    !((p.~pacienteProcedimentoEnfermeiro in MudarSoro 
+    and p1.~pacienteProcedimentoEnfermeiro in MudarSoro)
+    or (p.~pacienteProcedimentoEnfermeiro in MinistrarMedicamentos and 
+    p1.~pacienteProcedimentoEnfermeiro in MinistrarMedicamentos) 
+    or (p.~pacienteProcedimentoEnfermeiro 
+    in MedirPressao and p1.~pacienteProcedimentoEnfermeiro in MedirPressao))
+}
+
 
 -- CRIAÇAO DO DIAGRAMA
 
 pred show[] {}
-run show for 15
+run show for 12
 
 check todoPacienteCirurgiaTemDoisEnfermeiros for 3
 check todoPacienteNormalTemUmEnfermeiro for 3
