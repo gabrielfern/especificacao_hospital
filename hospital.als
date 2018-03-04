@@ -120,6 +120,10 @@ pred todoCuidarTemUmMedico[] {
     all c: Cuidar | one c.~cuidados
 }
 
+pred todoPacienteCirurgiaTemDoisProcedimentosDiferentes[] {
+    all p : PacienteCirurgia, p1: PacienteCirurgia | !((p.~pacienteProcedimentoEnfermeiro in MudarSoro and p1.~pacienteProcedimentoEnfermeiro in MudarSoro) or (p.~pacienteProcedimentoEnfermeiro in MinistrarMedicamentos and p1.~pacienteProcedimentoEnfermeiro in MinistrarMedicamentos) or (p.~pacienteProcedimentoEnfermeiro in MedirPressao and p1.~pacienteProcedimentoEnfermeiro in MedirPressao))
+}
+
 
 -- FATOS
 
@@ -138,6 +142,7 @@ fact Paciente {
     todoPacienteTemEnfermeiro[]
     todoPacienteTemNoMaxUmMedico[]
     todoPacienteEhTidoNoMaxPorUmCuidar[]
+    todoPacienteCirurgiaTemDoisProcedimentosDiferentes
 }
 
 fact ProcedimentoEnfermeiro {
@@ -183,7 +188,7 @@ assert cuidadosIgualPaciente {
 -- CRIAÇAO DO DIAGRAMA
 
 pred show[] {}
-run show for 5
+run show for 15
 
 check todoPacienteCirurgiaTemDoisEnfermeiros for 3
 check todoPacienteNormalTemUmEnfermeiro for 3
