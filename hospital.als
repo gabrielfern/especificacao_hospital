@@ -164,7 +164,7 @@ assert todoProcedimentoTemUmEnfermeiro {
     all p: ProcedimentoEnfermeiro | one p.~procedimentosEnfermeiro
 }
 
-assert medicoPacientesIgualMecidoPaciente {
+assert medicoPacientesIgualMedicoPaciente {
 	#medicoPacientes = #medicoPaciente
 }
 
