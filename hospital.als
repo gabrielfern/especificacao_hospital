@@ -121,13 +121,12 @@ pred todoCuidarTemUmMedico[] {
 }
 
 pred todoPacienteCirurgiaTemDoisProcedimentosDiferentes[] {
-    all p : PacienteCirurgia, p1: PacienteCirurgia | 
-    !((p.~pacienteProcedimentoEnfermeiro in MudarSoro and 
-    p1.~pacienteProcedimentoEnfermeiro in MudarSoro) or 
-    (p.~pacienteProcedimentoEnfermeiro in MinistrarMedicamentos and 
-    p1.~pacienteProcedimentoEnfermeiro in MinistrarMedicamentos) or 
-    (p.~pacienteProcedimentoEnfermeiro in MedirPressao and 
-    p1.~pacienteProcedimentoEnfermeiro in MedirPressao))
+    all p : PacienteCirurgia | 
+    !((p.~pacienteProcedimentoEnfermeiro in MudarSoro)
+    or
+    (p.~pacienteProcedimentoEnfermeiro in MinistrarMedicamentos) 
+    or
+    (p.~pacienteProcedimentoEnfermeiro in MedirPressao))
 }
 
 
@@ -191,26 +190,25 @@ assert cuidadosIgualPaciente {
 }
 
 assert todoPacienteCirurgiaTemDoisProcedimentosDiferentes {
-    all p : PacienteCirurgia, p1: PacienteCirurgia | 
-    !((p.~pacienteProcedimentoEnfermeiro in MudarSoro 
-    and p1.~pacienteProcedimentoEnfermeiro in MudarSoro)
-    or (p.~pacienteProcedimentoEnfermeiro in MinistrarMedicamentos and 
-    p1.~pacienteProcedimentoEnfermeiro in MinistrarMedicamentos) 
-    or (p.~pacienteProcedimentoEnfermeiro 
-    in MedirPressao and p1.~pacienteProcedimentoEnfermeiro in MedirPressao))
+    all p : PacienteCirurgia | 
+    !((p.~pacienteProcedimentoEnfermeiro in MudarSoro)
+    or
+    (p.~pacienteProcedimentoEnfermeiro in MinistrarMedicamentos) 
+    or
+    (p.~pacienteProcedimentoEnfermeiro in MedirPressao))
 }
 
 
 -- CRIAÇAO DO DIAGRAMA
 
 pred show[] {}
-run show for 12
+run show for 9
 
-check todoPacienteCirurgiaTemDoisEnfermeiros for 3
-check todoPacienteNormalTemUmEnfermeiro for 3
-check todoPacienteTemNoMaxUmMedico for 3
-check todoMedicoTemAteCincoPacientes for 3
-check todoEnfermeiroTemTresProcedimentos for 3
-check todoProcedimentoTemUmEnfermeiro for 3
-check cuidadosIgualPaciente for 3
-check todoPacienteCirurgiaTemDoisProcedimentosDiferentes for 3
+check todoPacienteCirurgiaTemDoisEnfermeiros for 9
+check todoPacienteNormalTemUmEnfermeiro for 9
+check todoPacienteTemNoMaxUmMedico for 9
+check todoMedicoTemAteCincoPacientes for 9
+check todoEnfermeiroTemTresProcedimentos for 9
+check todoProcedimentoTemUmEnfermeiro for 9
+check cuidadosIgualPaciente for 9
+check todoPacienteCirurgiaTemDoisProcedimentosDiferentes for 9
